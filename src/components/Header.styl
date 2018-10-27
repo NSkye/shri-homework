@@ -1,0 +1,42 @@
+@import '~@/globals'
+
+.header
+  position relative
+  box-sizing border-box
+  display flex
+  width 100%
+  height $header-desktop-height
+  border-bottom $border-main
+  padding-left $desktop-paddings
+  padding-right $desktop-paddings
+  z-index 2
+  background-color $bg-main
+  &__logo
+    background-repeat no-repeat
+    background-size contain
+    background-position center
+    height 100%
+    width 110px
+  &__background-mobile
+    position absolute
+    top 0
+    left 0
+    display none
+    width 100%
+    height 100%
+    z-index -1
+  @media (max-width 640px)
+    justify-content space-between
+    border-bottom none
+    padding-left $mobile-paddings
+    padding-right $mobile-paddings
+    height $header-mobile-height
+    &__background-mobile
+      display block
+
+.fix-pos
+  width 100%
+  height auto
+  position fixed
+  top 0
+  left 0
