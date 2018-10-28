@@ -1,3 +1,21 @@
+<style lang="stylus" scoped src='./Footer.styl'></style>
+
 <template>
-  <footer></footer>
+  <footer class='footer'>
+    <span v-for='(item, i) in footer.items' :key='i' class='footer__item'>
+      <a v-bind:href='item.href' class='footer__link'>{{ item.title }}</a>
+    </span>
+    <span class='footer__copyright'>{{ footer.copyright }}</span>
+  </footer>
 </template>
+
+<script lang="ts">
+import Vue from 'vue'
+import { footer } from '@/App.config'
+
+export default Vue.extend({
+  data () {
+    return { footer }
+  }
+})
+</script>

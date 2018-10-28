@@ -26,5 +26,5 @@ export default Vue.extend({
   display flex
   flex-direction column
   min-height 100vh
+  font-family Arial, Helvetica, sans-serif
 </style>
-
