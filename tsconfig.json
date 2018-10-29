@@ -8,9 +8,12 @@
       "utils/*": ["src/utils/*"],
       "libs/*": ["src/libs/*"]
     },
-    "target": "es2015",
+    "target": "es5",
     "strict": true,
     "module": "es2015",
     "moduleResolution": "node"
-  }
+  },
+  "include": [
+    "./src/**/*"
+  ]
 }

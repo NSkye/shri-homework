@@ -11,7 +11,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { footer } from '@/App.config'
+const config : any = require('@/App.config.js');
+const { footer } = config;
 
 export default Vue.extend({
   data () {

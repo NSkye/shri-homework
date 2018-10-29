@@ -1,9 +1,9 @@
 import VueRouter from 'vue-router'
 import Vue from 'vue'
 
-import Events from 'pages/Events.vue'
-import Camera from 'pages/Camera.vue'
-import VideoFeed from 'pages/VideoFeed.vue'
+import Events from 'pages/Events-page.vue'
+import Camera from 'pages/Camera-page.vue'
+import VideoFeed from 'pages/VideoFeed-page.vue'
 
 Vue.use(VueRouter)
 

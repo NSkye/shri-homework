@@ -13,6 +13,14 @@ module.exports = {
         use: 'vue-loader'
       },
       {
+        test: /\.tsx?$/,
+        loader: 'ts-loader',
+        exclude: /node-modules/,
+        options: {
+          appendTsSuffixTo: [/\.vue$/]
+        }
+      },
+      {
         enforce: 'pre',
         test: /\.(ts|vue)$/,
         exclude: /node_modules/,
@@ -67,7 +75,7 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['.ts', '.js', '.vue'],
+    extensions: ['.ts', '.js'],
     alias: {
       '@': path.resolve(__dirname, 'src'),
       'components': path.resolve(__dirname, './src/components'),
