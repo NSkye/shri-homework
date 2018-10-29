@@ -7,18 +7,18 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import Header from 'components/Header.vue'
-import Main from 'components/Main.vue'
-import Footer from 'components/Footer.vue'
+import Footer from 'components/Footer.vue';
+import Header from 'components/Header.vue';
+import Main from 'components/Main.vue';
+import Vue from 'vue';
 
 export default Vue.extend({
   components: {
     Header,
     Main,
-    Footer
-  }
-})
+    Footer,
+  },
+});
 </script>
 
 <style lang="stylus" scoped>

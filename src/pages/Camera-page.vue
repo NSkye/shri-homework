@@ -5,14 +5,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import Camera from 'components/Camera.vue'
+import Camera from 'components/Camera.vue';
+import Vue from 'vue';
 
 export default Vue.extend({
   components: {
-    Camera
-  }
-})
+    Camera,
+  },
+});
 </script>
 
 <style lang="stylus" scoped>

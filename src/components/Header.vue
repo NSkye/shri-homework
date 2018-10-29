@@ -16,22 +16,22 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import logo from 'assets/logo.svg'
-import Navigation from 'components/Navigation.vue'
-import NavigationHamburgerButton from 'components/NavigationHamburgerButton.vue'
+import logo from 'assets/logo.svg';
+import Navigation from 'components/Navigation.vue';
+import NavigationHamburgerButton from 'components/NavigationHamburgerButton.vue';
+import Vue from 'vue';
 
 export default Vue.extend({
-  data () {
+  data() {
     return {
       logo,
-      navOpen: false
-    }
+      navOpen: false,
+    };
   },
   methods: {
-    toggleNav () {
-      this.navOpen = !this.navOpen
-    }
-  }
-})
+    toggleNav() {
+      this.navOpen = !this.navOpen;
+    },
+  },
+});
 </script>

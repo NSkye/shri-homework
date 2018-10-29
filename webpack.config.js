@@ -14,17 +14,18 @@ module.exports = {
       },
       {
         test: /\.tsx?$/,
-        loader: 'ts-loader',
-        exclude: /node-modules/,
-        options: {
-          appendTsSuffixTo: [/\.vue$/]
-        }
-      },
-      {
-        enforce: 'pre',
-        test: /\.(ts|vue)$/,
-        exclude: /node_modules/,
-        loader: 'tslint-loader'
+        use: [{
+          loader: 'ts-loader',
+          options: {
+            appendTsSuffixTo: [/\.vue$/]
+          }
+        }, {
+          loader: 'tslint-loader',
+          options: {
+            appendTsSuffixTo: [/\.vue$/]
+          }
+        }],
+        exclude: /node-modules/
       },
       {
         test: /\.css$/,

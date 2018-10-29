@@ -1,5 +1,4 @@
 <style lang="stylus" scoped src='./Camera.styl'></style>
-
 <template>
   <div class="camera">
     <div class="camera__window-wrapper">
@@ -22,39 +21,39 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import panoramicImage from 'assets/panorama.jpg'
-import Camera from './Camera'
+import panoramicImage from 'assets/panorama.jpg';
+import Vue from 'vue';
+import Camera from './Camera';
 
-interface cameraComponentState {
-  panoramicImage: string,
-  camera: Camera | null
+interface CameraComponentState {
+  panoramicImage: string;
+  camera: Camera | null;
 }
 
 export default Vue.extend({
-  data () : cameraComponentState {
+  data(): CameraComponentState {
     return {
       panoramicImage,
-      camera: null
-    }
+      camera: null,
+    };
   },
-  mounted () {
+  mounted() {
     this.camera = new Camera(this.$refs.cameraWindow as HTMLElement, {
       zoom: 1,
       brightness: 100,
-      position: 0
+      position: 0,
     });
   },
   computed: {
-    zoom () : number {
+    zoom(): number {
       return this.camera ? this.camera.zoom : 1;
     },
-    brightness () : number {
+    brightness(): number {
       return this.camera ? this.camera.brightness : 100;
     },
-    position () : number {
+    position(): number {
       return this.camera ? this.camera.position : 0;
-    }
-  }
-})
+    },
+  },
+});
 </script>

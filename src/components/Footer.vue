@@ -10,13 +10,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-const config : any = require('@/App.config.js');
+import config from '@/App.config';
+import Vue from 'vue';
 const { footer } = config;
 
 export default Vue.extend({
-  data () {
-    return { footer }
-  }
-})
+  data() {
+    return { footer };
+  },
+});
 </script>

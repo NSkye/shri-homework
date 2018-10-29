@@ -1,10 +1,11 @@
-import Vue from 'vue'
-import App from '@/App.vue'
-import router from '@/router'
-import 'normalize.css'
+import App from '@/App.vue';
+import router from '@/router';
+import 'normalize.css';
+import Vue from 'vue';
 
-new Vue({
-  el: '#root',
+const appInstance: Vue = new Vue({
   router,
-  render: h => h(App)
-})
+  render: h => h(App),
+});
+
+appInstance.$mount('#root');
