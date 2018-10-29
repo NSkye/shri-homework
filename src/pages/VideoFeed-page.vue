@@ -9,8 +9,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import Feed from 'components/Feed.vue'
+import Feed from 'components/Feed.vue';
+import Vue from 'vue';
 
 export default Vue.extend({
   data() {
@@ -21,12 +21,12 @@ export default Vue.extend({
         'http://localhost:9191/master?url=http%3A%2F%2Flocalhost%3A3102%2Fstreams%2Fdog%2Fmaster.m3u8',
         'http://localhost:9191/master?url=http%3A%2F%2Flocalhost%3A3102%2Fstreams%2Fhall%2Fmaster.m3u8',
       ],
-    }
+    };
   },
   components: {
-    Feed
-  }
-})
+    Feed,
+  },
+});
 </script>
 
 <style lang="stylus" scoped>
@@ -46,5 +46,3 @@ export default Vue.extend({
   align-content center
   box-sizing border-box
 </style>
-
-

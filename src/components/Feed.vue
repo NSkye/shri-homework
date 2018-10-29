@@ -1,20 +1,20 @@
 <style lang="stylus" scoped src='./Feed.styl'></style>
 <script lang="ts">
-import Vue from 'vue'
-import { AudioStatsProcessor, VideoStatsProcessor } from '@/logic/Feed'
-import { AnimatedFeed } from '@/logic/Feed'
+import { AudioStatsProcessor, VideoStatsProcessor } from '@/logic/Feed';
+import { AnimatedFeed } from '@/logic/Feed';
+import Vue from 'vue';
 
-interface state {
-  audioProcessor: AudioStatsProcessor | null,
-  videoProcessor: VideoStatsProcessor | null,
-  animation: AnimatedFeed | null,
-  showControls: boolean,
-  brightness: string,
-  contrast: string,
-  style: any
+interface State {
+  audioProcessor: AudioStatsProcessor | null;
+  videoProcessor: VideoStatsProcessor | null;
+  animation: AnimatedFeed | null;
+  showControls: boolean;
+  brightness: string;
+  contrast: string;
+  style: any;
 }
 export default Vue.extend({
-  data () : state {
+  data(): State {
     return {
       audioProcessor: null,
       videoProcessor: null,
@@ -29,65 +29,65 @@ export default Vue.extend({
         width: '100%',
         height: '100%',
         transform: 'none',
-        zIndex: 0
-      }
-    }
+        zIndex: 0,
+      },
+    };
   },
-  mounted () {
-    const videoContainer : HTMLVideoElement = this.$refs.videoContainer as HTMLVideoElement
-    const globalNameSpace = window as any
+  mounted() {
+    const videoContainer: HTMLVideoElement = this.$refs.videoContainer as HTMLVideoElement;
+    const globalNameSpace = window as any;
     const HLS = globalNameSpace.Hls;
     if (HLS.isSupported()) {
-      const hls = new HLS()
-      hls.loadSource(this.source)
-      hls.attachMedia(videoContainer)
-      hls.on(HLS.Events.MANIFEST_PARSED, () => videoContainer.play())
+      const hls = new HLS();
+      hls.loadSource(this.source);
+      hls.attachMedia(videoContainer);
+      hls.on(HLS.Events.MANIFEST_PARSED, () => videoContainer.play());
     }
-    const canvas = this.$refs.canvas
+    const canvas = this.$refs.canvas;
     this.audioProcessor = new AudioStatsProcessor(videoContainer);
     this.videoProcessor = new VideoStatsProcessor(videoContainer, canvas as HTMLCanvasElement);
     this.animation = new AnimatedFeed(this);
   },
   computed: {
-    volumeLevel: function() {
+    volumeLevel(): number {
       if (!this.audioProcessor) { return 0; }
       return this.audioProcessor.volumeLevel;
     },
-    brightnessLevel: function() {
+    brightnessLevel(): number {
       if (!this.videoProcessor) { return 0; }
       return this.videoProcessor.brightnessLevel;
     },
-    motionLevel: function() {
+    motionLevel(): number {
       if (!this.videoProcessor) { return 0; }
       return this.videoProcessor.motionLevel;
     },
-    scaleLevel: function() {
+    scaleLevel(): number {
       if (!this.animation) { return 1; }
       return this.animation.scaleLevel;
-    }
+    },
   },
   beforeDestroy() {
     this.audioProcessor && this.audioProcessor.kill();
     this.videoProcessor && this.videoProcessor.kill();
   },
   methods: {
-    adjustBrightness: function (e: Event) : void {
+    adjustBrightness(e: Event): void {
       if (e) {
-        this.brightness = (e.srcElement as HTMLInputElement).value
+        this.brightness = (e.srcElement as HTMLInputElement).value;
       }
     },
-    adjustContrast: function (e: Event) : void {
+    adjustContrast(e: Event): void {
       if (!e) { return; }
-      this.contrast = (e.srcElement as HTMLInputElement).value
+      this.contrast = (e.srcElement as HTMLInputElement).value;
     },
-    open: function() : void {
+    open(): void {
       this.animation && this.animation.focusOn(() => {
         this.videoProcessor && this.videoProcessor.startProcessing();
         this.audioProcessor && this.audioProcessor.startProcessing();
         this.showControls = true;
       });
     },
-    close: function() : void {
+    close(): void {
       this.animation && this.animation.focusOff(() => {
         this.showControls = false;
         if (this.videoProcessor) {
@@ -96,13 +96,13 @@ export default Vue.extend({
         if (this.audioProcessor) {
           this.audioProcessor.kill();
         }
-      })
-    }
+      });
+    },
   },
   props: {
-    source: String
+    source: String,
   },
-})
+});
 </script>
 
 <template>
