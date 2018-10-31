@@ -1,7 +1,7 @@
 <style lang="stylus" scoped src='./Feed.styl'></style>
 <script lang="ts">
 import { AudioStatsProcessor, VideoStatsProcessor } from '@/logic/Feed';
-import { AnimatedFeed, VideoElementStyle, ComponentStyle } from '@/logic/Feed';
+import { AnimatedFeed, ComponentStyle, VideoElementStyle } from '@/logic/Feed';
 import Vue from 'vue';
 
 interface State {
@@ -27,11 +27,11 @@ export default Vue.extend({
   mounted() {
     const videoContainer: HTMLVideoElement = this.$refs.videoContainer as HTMLVideoElement;
 
-    interface windowWithHLS extends Window {
-      Hls?: any
+    interface WindowWithHLS extends Window {
+      Hls?: any;
     }
 
-    const globalNameSpace = window as windowWithHLS;
+    const globalNameSpace = window as WindowWithHLS;
     const HLS = globalNameSpace.Hls;
     if (HLS.isSupported()) {
       const hls = new HLS();
@@ -39,12 +39,12 @@ export default Vue.extend({
       hls.attachMedia(videoContainer);
       hls.on(HLS.Events.MANIFEST_PARSED, () => videoContainer.play());
     }
-    const canvas : HTMLCanvasElement = this.$refs.canvas as HTMLCanvasElement;
+    const canvas: HTMLCanvasElement = this.$refs.canvas as HTMLCanvasElement;
     this.audioProcessor = new AudioStatsProcessor(videoContainer);
     this.videoProcessor = new VideoStatsProcessor(videoContainer, canvas);
     this.animation = new AnimatedFeed(
       this.$refs.wrapperDiv as HTMLElement,
-      this.$refs.videoDiv as HTMLElement
+      this.$refs.videoDiv as HTMLElement,
     );
   },
   computed: {
@@ -73,19 +73,19 @@ export default Vue.extend({
         height: '100%',
         transform: 'none',
         zIndex: 0,
-      };}
-      return this.animation.videoDivStyle
+      }; }
+      return this.animation.videoDivStyle;
     },
     videoElementStyle(): VideoElementStyle {
-      if (!this.animation) { return { 
+      if (!this.animation) { return {
         filter: `brightness(${this.brightness}%) contrast(${this.contrast}%)`,
-        zIndex: 'auto' 
+        zIndex: 'auto',
       }; }
       return {
         filter: `brightness(${this.brightness}%) contrast(${this.contrast}%)`,
-        ...this.animation.videoElementStyle
-      }
-    }
+        ...this.animation.videoElementStyle,
+      };
+    },
   },
   beforeDestroy() {
     this.audioProcessor && this.audioProcessor.kill();

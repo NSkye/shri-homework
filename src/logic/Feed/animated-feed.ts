@@ -1,25 +1,19 @@
 export interface ComponentStyle {
-  position: string,
-  left: string,
-  top: string,
-  width: string,
-  height: string,
-  transform: string,
-  zIndex: number | string
+  position: string;
+  left: string;
+  top: string;
+  width: string;
+  height: string;
+  transform: string;
+  zIndex: number | string;
 }
 
 export interface VideoElementStyle {
-  filter?: string,
-  zIndex: number | string
+  filter?: string;
+  zIndex: number | string;
 }
 
 export class AnimatedFeed {
-  private focusActive: boolean = false;
-  private animationInProgress: boolean = false;
-  private returnFrames: Keyframe[] = [];
-  
-  private wrapperDiv: HTMLElement
-  private videoDiv: HTMLElement
   public videoDivStyle: ComponentStyle = {
     position: 'static',
     left: 'auto',
@@ -28,12 +22,18 @@ export class AnimatedFeed {
     height: '100%',
     transform: 'none',
     zIndex: 0,
-  }
+  };
   public videoElementStyle: VideoElementStyle = {
     zIndex: 'auto',
-  }
+  };
 
   public scaleLevel: number = 1;
+  private focusActive: boolean = false;
+  private animationInProgress: boolean = false;
+  private returnFrames: Keyframe[] = [];
+
+  private wrapperDiv: HTMLElement;
+  private videoDiv: HTMLElement;
 
   constructor(wrapperDiv: HTMLElement, videoDiv: HTMLElement) {
     this.videoDiv = videoDiv;
@@ -96,7 +96,7 @@ export class AnimatedFeed {
   }
 
   public calculateTransform() {
-    const outerElement : HTMLElement = this.wrapperDiv.parentElement || document.querySelector('body') as HTMLElement;
+    const outerElement: HTMLElement = this.wrapperDiv.parentElement || document.querySelector('body') as HTMLElement;
 
     const wc = window.innerHeight < outerElement.scrollHeight ?
       getWindowCenter() :

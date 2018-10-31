@@ -8,19 +8,21 @@ export class AudioStatsProcessor {
 
   constructor(video: HTMLVideoElement) {
     interface GlobalNamespace extends Window {
-      AudioContext?: {new ():AudioContext};
-      webkitAudioContext?: {new ():AudioContext};
+      AudioContext?: {new (): AudioContext};
+      webkitAudioContext?: {new (): AudioContext};
     }
 
     const globalNamespace = window as GlobalNamespace;
-    const wAudioContext: { new ():AudioContext } | undefined = globalNamespace.AudioContext || globalNamespace.webkitAudioContext;
+    const wAudioContext:
+      { new (): AudioContext } | undefined = globalNamespace.AudioContext
+      || globalNamespace.webkitAudioContext;
 
     if (wAudioContext) {
       this.audioCtx = (new wAudioContext());
     } else {
-      throw Error('Browser doesnt support audiocontext')
+      throw Error('Browser doesnt support audiocontext');
     }
-    
+
     this.video = video;
     this.processAudio = this.processAudio.bind(this);
   }
