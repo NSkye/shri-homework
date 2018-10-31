@@ -1,7 +1,7 @@
 <style lang="stylus" scoped src='./Feed.styl'></style>
 <script lang="ts">
 import { AudioStatsProcessor, VideoStatsProcessor } from '@/logic/Feed';
-import { AnimatedFeed } from '@/logic/Feed';
+import { AnimatedFeed, VideoElementStyle, ComponentStyle } from '@/logic/Feed';
 import Vue from 'vue';
 
 interface State {
@@ -11,8 +11,8 @@ interface State {
   showControls: boolean;
   brightness: string;
   contrast: string;
-  style: any;
 }
+
 export default Vue.extend({
   data(): State {
     return {
@@ -22,20 +22,16 @@ export default Vue.extend({
       showControls: false,
       brightness: '100',
       contrast: '100',
-      style: { //
-        position: 'static',
-        left: 'auto',
-        top: 'auto',
-        width: '100%',
-        height: '100%',
-        transform: 'none',
-        zIndex: 0,
-      },
     };
   },
   mounted() {
     const videoContainer: HTMLVideoElement = this.$refs.videoContainer as HTMLVideoElement;
-    const globalNameSpace = window as any;
+
+    interface windowWithHLS extends Window {
+      Hls?: any
+    }
+
+    const globalNameSpace = window as windowWithHLS;
     const HLS = globalNameSpace.Hls;
     if (HLS.isSupported()) {
       const hls = new HLS();
@@ -43,10 +39,13 @@ export default Vue.extend({
       hls.attachMedia(videoContainer);
       hls.on(HLS.Events.MANIFEST_PARSED, () => videoContainer.play());
     }
-    const canvas = this.$refs.canvas;
+    const canvas : HTMLCanvasElement = this.$refs.canvas as HTMLCanvasElement;
     this.audioProcessor = new AudioStatsProcessor(videoContainer);
-    this.videoProcessor = new VideoStatsProcessor(videoContainer, canvas as HTMLCanvasElement);
-    this.animation = new AnimatedFeed(this);
+    this.videoProcessor = new VideoStatsProcessor(videoContainer, canvas);
+    this.animation = new AnimatedFeed(
+      this.$refs.wrapperDiv as HTMLElement,
+      this.$refs.videoDiv as HTMLElement
+    );
   },
   computed: {
     volumeLevel(): number {
@@ -65,6 +64,28 @@ export default Vue.extend({
       if (!this.animation) { return 1; }
       return this.animation.scaleLevel;
     },
+    videoDivStyle(): ComponentStyle {
+      if (!this.animation) { return {
+        position: 'static',
+        left: 'auto',
+        top: 'auto',
+        width: '100%',
+        height: '100%',
+        transform: 'none',
+        zIndex: 0,
+      };}
+      return this.animation.videoDivStyle
+    },
+    videoElementStyle(): VideoElementStyle {
+      if (!this.animation) { return { 
+        filter: `brightness(${this.brightness}%) contrast(${this.contrast}%)`,
+        zIndex: 'auto' 
+      }; }
+      return {
+        filter: `brightness(${this.brightness}%) contrast(${this.contrast}%)`,
+        ...this.animation.videoElementStyle
+      }
+    }
   },
   beforeDestroy() {
     this.audioProcessor && this.audioProcessor.kill();
@@ -107,7 +128,7 @@ export default Vue.extend({
 
 <template>
   <div ref='wrapperDiv' class="video-wrapper">
-    <div v-on:click='open' :style='style' ref='videoDiv' class="video">
+    <div v-on:click='open' :style='videoDivStyle' ref='videoDiv' class="video">
       <div class="position-relative-wrapper">
         <div v-show='showControls' class="video__controls">
           <div class='video__all-videos' role='button' v-on:click='close'>Все видео</div>
@@ -136,7 +157,7 @@ export default Vue.extend({
             </div>
           </div>
         </div>
-        <video :style='{ filter: `brightness(${brightness}%) contrast(${contrast}%)` }' ref='videoContainer' :muted='!showControls' src="" class="video__video" />
+        <video :style='videoElementStyle' ref='videoContainer' :muted='!showControls' src="" class="video__video" />
         <canvas class='canvas' ref='canvas' />
       </div>
     </div>

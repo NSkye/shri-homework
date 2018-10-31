@@ -1,17 +1,43 @@
-interface Frame {
-  transform: string;
+export interface ComponentStyle {
+  position: string,
+  left: string,
+  top: string,
+  width: string,
+  height: string,
+  transform: string,
+  zIndex: number | string
+}
+
+export interface VideoElementStyle {
+  filter?: string,
+  zIndex: number | string
 }
 
 export class AnimatedFeed {
-
-  public scaleLevel: number = 1;
-  private ctx: any | null = null;
   private focusActive: boolean = false;
   private animationInProgress: boolean = false;
-  private returnFrames: Frame[] = [];
+  private returnFrames: Keyframe[] = [];
+  
+  private wrapperDiv: HTMLElement
+  private videoDiv: HTMLElement
+  public videoDivStyle: ComponentStyle = {
+    position: 'static',
+    left: 'auto',
+    top: 'auto',
+    width: '100%',
+    height: '100%',
+    transform: 'none',
+    zIndex: 0,
+  }
+  public videoElementStyle: VideoElementStyle = {
+    zIndex: 'auto',
+  }
 
-  constructor(ctx: any) {
-    this.ctx = ctx;
+  public scaleLevel: number = 1;
+
+  constructor(wrapperDiv: HTMLElement, videoDiv: HTMLElement) {
+    this.videoDiv = videoDiv;
+    this.wrapperDiv = wrapperDiv;
   }
 
   public focusOn(afterAnimation: () => void): void {
@@ -19,8 +45,8 @@ export class AnimatedFeed {
       return;
     }
     this.makeAbsolute();
-    this.ctx.style.zIndex = 4;
-    this.ctx.$refs.videoContainer.style.zIndex = -1;
+    this.videoDivStyle.zIndex = 4;
+    this.videoElementStyle.zIndex = -1;
     this.focusActive = true;
     this.animationInProgress = true;
     this.returnFrames = this.animateTransform(() => {
@@ -38,28 +64,28 @@ export class AnimatedFeed {
     this.animateTransform(() => {
       this.focusActive = false;
       this.animationInProgress = false;
-      this.ctx.style.zIndex = 0;
+      this.videoDivStyle.zIndex = 0;
       this.makeStatic();
-      this.ctx.$refs.videoContainer.style.zIndex = 'auto';
+      this.videoElementStyle.zIndex = 'auto';
       afterAnimation && afterAnimation();
     }, 200, this.returnFrames);
   }
 
-  public calculateAbsolutePosition(): any {
-    const wrapper = this.ctx.$refs.wrapperDiv;
+  public calculateAbsolutePosition(): {width: string, height: string} {
+    const wrapper = this.wrapperDiv;
     return {
       width: `${wrapper.clientWidth}px`,
       height: `${wrapper.clientHeight}px`,
     };
   }
 
-  public animateTransform(cb: () => void, ms: number, frames?: Frame[]): Frame[] {
+  public animateTransform(cb: () => void, ms: number, frames?: Keyframe[]): Keyframe[] {
     const { scale, translate } = this.calculateTransform();
     frames = frames || [
-      { transform: 'translate(0) scale(1)' },
-      { transform: `${translate} ${scale}` },
+      { transform: 'translate(0) scale(1)' } as Keyframe,
+      { transform: `${translate} ${scale}` } as Keyframe,
     ];
-    const player = this.ctx.$refs.videoDiv.animate(frames, {
+    const player = this.videoDiv.animate(frames, {
       duration: ms,
       iterations: 1,
       fill: 'forwards',
@@ -70,13 +96,15 @@ export class AnimatedFeed {
   }
 
   public calculateTransform() {
-    const wc = window.innerHeight < this.ctx.$refs.wrapperDiv.parentElement.scrollHeight ?
+    const outerElement : HTMLElement = this.wrapperDiv.parentElement || document.querySelector('body') as HTMLElement;
+
+    const wc = window.innerHeight < outerElement.scrollHeight ?
       getWindowCenter() :
-      getElementCenter(this.ctx.$refs.wrapperDiv.parentElement);
-    const ec = getElementCenter(this.ctx.$refs.videoDiv);
+      getElementCenter(outerElement);
+    const ec = getElementCenter(this.videoDiv);
 
     const translate = `translate(${wc.x - ec.x}px, ${wc.y - ec.y}px)`;
-    const scaleLevel = (this.ctx.$refs.wrapperDiv.parentElement.clientWidth) / this.ctx.$refs.videoDiv.clientWidth;
+    const scaleLevel = (outerElement.clientWidth) / this.videoDiv.clientWidth;
     const scale = `scale(${scaleLevel})`;
     this.scaleLevel = scaleLevel;
     return {
@@ -86,20 +114,16 @@ export class AnimatedFeed {
   }
 
   private makeAbsolute(): void {
-    if (!this.ctx) { return; }
-
-    this.ctx.style = {
-      ...this.ctx.style,
+    this.videoDivStyle = {
+      ...this.videoDivStyle,
       position: 'absolute',
       ...this.calculateAbsolutePosition(),
     };
   }
 
   private makeStatic(): void {
-    if (!this.ctx) { return; }
-
-    this.ctx.style = {
-      ...this.ctx.style,
+    this.videoDivStyle = {
+      ...this.videoDivStyle,
       position: 'static',
     };
   }
