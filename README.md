@@ -31,22 +31,33 @@ npm run lint
 ### Сложности
 В основном сложности возникали на этапе сборки и настройки окружения, но в целом и это не заняло много времени. Дополнительных проблем добавили некоторые дефолтные декларации типов. Например, у типа `PointerEvent` нет метода `getCoalescedEvents` и его [пришлось расширять](https://github.com/NSkye/shri-homework/blob/master/src/libs/pointer-events-coalesced-events-polyfill.ts). Так же, были проблемы с привязкой ивент-листенеров, так как они передают в соответствии с декларацией в коллбэк `Event`, который не совместим с `PointerEvent`, из-за этого приходилось как раз использовать `as`, также, его пришлось заиспользовать в некоторых местах, где идет взаимодействие с window (на window байндится библиотека для стриминга HLS, а также на нем в декларации нет аудиоконтекста), поэтому иногда приходилось творить вот такую дичь:
 ```javascript
-interface GlobalNamespace {
-  AudioContext?: any,
-  webkitAudioContext?: any
+interface GlobalNamespace extends Window {
+  AudioContext?: {new (): AudioContext};
+  webkitAudioContext?: {new (): AudioContext};
 }
-const globalNamespace = window as GlobalNamespace;    
-this.audioCtx = new (globalNamespace.AudioContext || globalNamespace.webkitAudioContext)()
+
+const globalNamespace = window as GlobalNamespace;
+const wAudioContext:
+  { new (): AudioContext } | undefined = globalNamespace.AudioContext
+  || globalNamespace.webkitAudioContext;
+
+if (wAudioContext) {
+  this.audioCtx = (new wAudioContext());
+} else {
+  throw Error('Browser doesnt support audiocontext');
+}
 ```
 Ещё из сложностей была функция setInterval. Согласно декларациям она возвращает тип NodeJS.Timeout, а вот функция clearInterval принимает number.
 ```javascript
 public kill() {
-    clearInterval(this.processingInterval as unknown as number);
+    this.processingInterval = setInterval(() => this.processFrame(this.w, this.h), 1000) as unknown as number;
 }
 ```
 Мне, кстати, правда интересно как с этим справляться. Переписывать декларации? Должно же быть какое-то более элегантное решение, всё же setInterval не то чтоб какая-то редко используемая функция.   
 
-С заданием на Node сложностей не возникло, кроме того, что я так до конца и не понял как правильно должны быть использованы декларации из express. Они в принципе работают, но у req и res сигнатура не совпадает с декларацией. Поэтому там сейчас у них стоит any.  
+С заданием на Node сложностей не возникло, кроме того, что я так до конца и не понял как правильно должны быть использованы декларации из express. Они в принципе работают, но у req и res сигнатура не совпадает с декларацией, выложенной в @types (совсем). Поэтому там сейчас у них стоит any.  
+
+В целом ассершены используются только там, где происходит взаимодействие с DOM-деревом и другими внешними сущностями, которые не всегда отдают тот тип, который ты ожидаешь получить и приходится делать какие-то такие приведения: `Event -> PointerEvent`, `Element -> HTMLVideoElement`, `Vue | Vue[] | Element | Element[] -> HTMLElement`
 
 Серьезных ошибок в процессе перевода найдено не было.  
 
