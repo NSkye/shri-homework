@@ -5,7 +5,7 @@ export class VideoStatsProcessor {
   private ctx: CanvasRenderingContext2D | null = null;
   private video: HTMLVideoElement;
   private canvas: HTMLCanvasElement;
-  private processingInterval: NodeJS.Timeout | null = null;
+  private processingInterval?: number;
   private imgData: Uint8ClampedArray = new Uint8ClampedArray(0);
   private w: number = 0;
   private h: number = 0;
@@ -21,11 +21,11 @@ export class VideoStatsProcessor {
     this.ctx = this.canvas.getContext('2d');
     this.canvas.height = this.h;
     this.canvas.width = this.w;
-    this.processingInterval = setInterval(() => this.processFrame(this.w, this.h), 1000);
+    this.processingInterval = setInterval(() => this.processFrame(this.w, this.h), 1000) as unknown as number;
   }
 
   public kill() {
-    clearInterval(this.processingInterval as unknown as number);
+    clearInterval(this.processingInterval);
   }
 
   private processFrame(w: number, h: number): void {
